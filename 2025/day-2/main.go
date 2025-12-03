@@ -52,17 +52,48 @@ func part1(input []input) {
 func part2(input []input) {
 	sum := 0
 	for _, ele := range input {
-		fmt.Println(ele)
 		for i := ele.min; i <= ele.max; i++ {
+
 			str := strconv.Itoa(i)
 			mid := len(str) / 2
 
 			if str[:mid] == str[mid:] {
 				sum += i
+			} else {
+
+				divisors := getDivisors(i)
+				matchFound := true
+				for _, ele := range divisors {
+					matchFound = true
+					for i := 0; i < len(str)-ele; i = i + ele {
+						if str[i:ele] != str[i+ele:i+ele+i+ele] {
+							matchFound = false
+							break
+						}
+					}
+					if matchFound {
+						break
+					}
+				}
+				if matchFound == true {
+					sum += i
+				}
 			}
 		}
 	}
 	fmt.Println("Part 2 Result is ", sum)
+}
+
+func getDivisors(num int) []int {
+	numLen := len(strconv.Itoa(num))
+	arr := make([]int, 0, numLen/2)
+	arr = append(arr, 1)
+	for i := 2; i <= numLen/2; i++ {
+		if numLen%2 == 0 {
+			arr = append(arr, i)
+		}
+	}
+	return arr
 }
 
 // link: https://adventofcode.com/2025/day/2
@@ -71,5 +102,4 @@ func main() {
 	//  part1(input)
 
 	part2(input)
-
 }
